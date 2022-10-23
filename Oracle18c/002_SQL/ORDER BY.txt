@@ -1,0 +1,5 @@
+■NULLは。無限扱い
+■NULL関連のオプション
+　▽NULLを最後(LAST)にする場合
+　　・NULLS LAST ：NULLは最後（昇順の時はデフォルトなので省略可）
+　　・NULLS FIRST：NULLは最初（降順の時はデフォルトなので省略可）
