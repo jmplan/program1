@@ -1,0 +1,72 @@
+■インストール先
+C:\Program Files\Git
+
+■Gitのバージョン確認
+$ git version
+git version 2.38.1.windows.1
+
+■ローカルリポジトリの新規作成（git init）
+・リポジトリとは、ファイルやディレクトリの状態、変更履歴を記録する場所
+git init
+
+⇒.gitというローカルリポジトリが作成される
+
+■基本的なワークフロー
+①ファイルの変更をステージングエリアに追加する
+②ローカルリポジトリにコミットする
+③リモートリポジトリ(GitHub)にプッシュする
+
+①git add
+②git commit
+③git push
+
+■GitHubにリポジトリを準備し、出力される次のコマンドで、GitHubを登録する
+git remote add origin https://github.com/jmplan/git_test.git
+git branch -M main
+git push -u origin main
+
+■Gitの設定内容表示
+git config --list
+
+■変更履歴の確認
+git log
+git log --oneline			1行で表示
+git log -p					ファイルの差分を表示
+git log -n 3				最新のコミットログの数
+git log --oneline -n 3
+
+■変更差分を確認
+add,commitする前に確認しよう
+git diff
+git diff HEAD				ステージとコミットの差分
+
+■リモートリポジトリに登録
+git remote add origin https://github.com/jmplan/git_test.git
+⇒今後はoriginという名前でGitHubリポジトリにアクセスできる
+
+■リモートレポジトリ確認
+git remote -v 				リモートレポジトリの確認
+cat .git/config				〃
+git config --list			〃
+
+■管理しないファイルをGitの管理から外す
+.gitignoreファイルに指定することで、ファイルをGitの管理から外す
+------------------------
+# #から始まる行はコメント
+# 指定したファイルを除外
+himitu.txt
+# ルートディレクトリを指定
+/root.html
+# ディレクトリ以下を除外
+dir/
+------------------------
+
+■git checkout
+https://codelikes.com/git-checkout/
+
+■不具合概要
+https://www.chihayafuru.jp/tech/index.php/archives/3578
+Git において、日本語のファイル名やパス名が化ける。
+解決策
+マルチバイト文字列のエスケープ処理を無効にする。
+$ git config --global core.quotepath false

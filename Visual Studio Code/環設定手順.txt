@@ -1,0 +1,2 @@
+１．インストール先
+C:\Users\jun-l\AppData\Local\Programs\Microsoft VS Code

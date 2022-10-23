@@ -1,0 +1,128 @@
+■インストール時の作業メモ
+　Oracleプロファイルのユーザ名：i-jun@nec.com
+
+①OracleXE184_Win64.zipを解凍
+②setup.exeを管理者として実行⇒ウィザードに準じて進める
+　・インストール先：C:\app\jun-l\product\18.0.0\
+　・Oralceホーム　：C:\app\jun-l\product\18.0.0\dbhomeXE\
+　・Oracleベース　：C:\app\jun-l\product\18.0.0\
+　・データベースパスワード：Oracle18c
+　・マルチテナント・コンテナ・データベース（CDB）：localhost:1521
+　・プラガブル・データベース（PDB）：localhost:1521/XEPDB1
+　・Enterprise Manager Express(EM Express) URL：https://localhost:5500/em
+③1-2-2.+インストール最後に実行するコマンド_18c.txt
+
+■tnsnames.oraのSERVICE_NAME = XXX の記述によって、v$pdbs出力結果が変わる
+
+▽SERVICE_NAME = XE
+
+XE =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = MyComputer)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = XE)
+    )
+  )
+
+SQL> conn / as sysdba
+接続されました。
+SQL> conn system/Oracle18c@xe
+接続されました。
+SQL>  select name, open_mode from v$pdbs;
+
+NAME
+--------------------------------------------------------------------------------
+OPEN_MODE
+----------
+PDB$SEED
+READ ONLY
+
+XEPDB1
+READ WRITE
+
+
+▽SERVICE_NAME = XEPDB1
+
+XE =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = MyComputer)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = XEPDB1)
+    )
+  )
+
+SQL> conn system/Oracle18c@xe
+接続されました。
+SQL>  select name, open_mode from v$pdbs;
+
+NAME
+--------------------------------------------------------------------------------
+OPEN_MODE
+----------
+XEPDB1
+READ WRITE
+
+
+SQL>
+
+■
+C:\Users\jun-l>lsnrctl
+
+LSNRCTL for 64-bit Windows: Version 18.0.0.0.0 - Production on 16-10月-2022 23:27:43
+
+Copyright (c) 1991, 2018, Oracle.  All rights reserved.
+
+LSNRCTLへようこそ。詳細は"help"と入力してください。
+
+LSNRCTL> status
+(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=MyComputer)(PORT=1521)))に接続中
+リスナーのステータス
+------------------------
+別名                      LISTENER
+バージョン                TNSLSNR for 64-bit Windows: Version 18.0.0.0.0 - Production
+開始日                    16-10月-2022 22:49:38
+稼働時間                  0 日 0 時間 38 分 11 秒
+トレース・レベル          off
+セキュリティ              ON: Local OS Authentication
+SNMP                      OFF
+デフォルト・サービス           XE
+パラメータ・ファイル      C:\app\jun-l\product\18.0.0\dbhomeXE\network\admin\listener.ora
+ログ・ファイル            C:\app\jun-l\product\18.0.0\diag\tnslsnr\MyComputer\listener\alert\log.xml
+リスニング・エンドポイントのサマリー...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=MyComputer)(PORT=1521)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=ipc)(PIPENAME=\\.\pipe\EXTPROC1521ipc)))
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcps)(HOST=127.0.0.1)(PORT=5500))(Security=(my_wallet_directory=C:\APP\JUN-L\PRODUCT\18.0.0\admin\XE\xdb_wallet))(Presentation=HTTP)(Session=RAW))
+サービスのサマリー...
+サービス"4d38ceeece164cada3bf1582f3f19d32"には、1件のインスタンスがあります。
+  インスタンス"xe"、状態READYには、このサービスに対する1件のハンドラがあります...
+サービス"CLRExtProc"には、1件のインスタンスがあります。
+  インスタンス"CLRExtProc"、状態UNKNOWNには、このサービスに対する1件のハンドラがあります...
+サービス"XE"には、1件のインスタンスがあります。
+  インスタンス"xe"、状態READYには、このサービスに対する1件のハンドラがあります...
+サービス"XEXDB"には、1件のインスタンスがあります。
+  インスタンス"xe"、状態READYには、このサービスに対する1件のハンドラがあります...
+サービス"xepdb1"には、1件のインスタンスがあります。
+  インスタンス"xe"、状態READYには、このサービスに対する1件のハンドラがあります...
+コマンドは正常に終了しました。
+LSNRCTL>
+
+■インストールが上手くいかない場合の動き
+
+・Oracleデータベースのインストール後、
+　「1-2-2.+インストール最後に実行するコマンド_18c .txt」の
+　「3. tnsnames.oraファイルを編集」の箇所ですが、
+　「SERVICE_NAME = XE」の記述がはじめから存在していなかった
+
+・SQL> conn /as sysdba
+　こちらを入力した段階で以下のようなエラーになってしまいました。
+　考えられる原因はありますでしょうか。
+
+　SQL>  conn /as sysdba
+　ERROR:
+　ORA-12560: TNS: プロトコル・アダプタ・エラーが発生しました
+
+・OracleServiceXEのサービスが見当たらない
+
+　⇒ 再度インストール
